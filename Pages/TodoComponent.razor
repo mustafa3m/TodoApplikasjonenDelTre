@@ -37,7 +37,11 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" @onclick="DeleteTodo">Delete</button>
+                    @* <button type="button" class="btn btn-danger" @onclick="() => RemoveTodoItem(selectedTodo)">Delete</button> *@
+
+                    @* <button type="button" class="btn btn-danger" onclick="window.modalHelpers.showModal('deleteModal')">Delete</button>  *@
+
+                    <button id="deleteModal" type="button" class="btn btn-danger" @onclick="DeleteTodo">Delete</button>
                 </div>
             </div>
         </div>
@@ -46,6 +50,19 @@
     @code {
         private string? newTodoTitle;
         private TodoItem? currentTodoToDelete; // Holds the item for deletion
+
+        
+
+
+        private void AddTodo()
+        {
+            if (!string.IsNullOrWhiteSpace(newTodoTitle))
+            {
+                TodoService.AddTodo(newTodoTitle);
+                newTodoTitle = string.Empty; // Clear input after adding
+            }
+        }
+
 
         private async Task OpenDeleteModal(TodoItem todo)
         {
@@ -61,16 +78,6 @@
                 currentTodoToDelete = null; // Clear the reference after deletion
                 await JS.InvokeVoidAsync("modalHelpers.hideModal", "deleteModal"); // Hide the modal after deletion
                 StateHasChanged(); // Force the UI to refresh
-            }
-        }
-
-
-        private void AddTodo()
-        {
-            if (!string.IsNullOrWhiteSpace(newTodoTitle))
-            {
-                TodoService.AddTodo(newTodoTitle);
-                newTodoTitle = string.Empty; // Clear input after adding
             }
         }
 
